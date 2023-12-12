@@ -34,9 +34,73 @@ const categoryOptions = [
   { value: 'other', label: 'Other' },
 ];
 
+const subCategoryOptions = {
+  'social-emotional-learning': [
+    { value: 'emotional-well-being', label: 'Emotional Well-being' },
+    { value: 'relationships-and-social-interactions', label: 'Relationships and Social Interactions' },
+    { value: 'academic-stress-and-performance', label: 'Academic Stress and Performance' },
+    { value: 'bullying-and-peer-pressure', label: 'Bullying and Peer Pressure' },
+    { value: 'home-and-family-life', label: 'Home and Family Life' },
+    { value: 'health-and-wellness', label: 'Health and Wellness' },
+    { value: 'school-climate-and-safety', label: 'School Climate and Safety' },
+  ],
+  'exit': [
+    { value: 'academic-experience', label: 'Academic Experience' },
+    { value: 'career-and-college-readiness', label: 'Career and College Readiness' },
+    { value: 'teacher-and-staff-relationships', label: 'Teacher and Staff Relationships' },
+    { value: 'school-facilities-and-resources', label: 'School Facilities and Resources' },
+    { value: 'school-culture-and-community', label: 'School Culture and Community' },
+    { value: 'feedback-on-counseling-services', label: 'Feedback on Counseling Services' },
+    { value: 'preparation-for-life-beyond-high-school', label: 'Preparation for Life Beyond High School' },
+  ],
+  'careers': [
+    { value: 'career-interests-and-goals', label: 'Career Interests and Goals' },
+    { value: 'skills-and-strengths', label: 'Skills and Strengths' },
+    { value: 'educational-and-training-goals', label: 'Educational and Training Goals' },
+    { value: 'awareness-of-career-options', label: 'Awareness of Career Options' },
+    { value: 'challenges-and-concerns', label: 'Challenges and Concerns' },
+    { value: 'extracurricular-and-work-experience', label: 'Extracurricular and Work Experience' },
+    { value: 'college-and-career-planning-resources', label: 'College and Career Planning Resources' },
+    { value: 'post-graduation-plans', label: 'Post-Graduation Plans' },
+  ],
+  'college': [
+    { value: 'college-preferences', label: 'College Preferences' },
+    { value: 'field-of-study-and-major', label: 'Field of Study and Major' },
+    { value: 'college-size-and-campus-environment', label: 'College Size and Campus Environment' },
+    { value: 'financial-considerations', label: 'Financial Considerations' },
+    { value: 'college-admission-process', label: 'College Admission Process' },
+    { value: 'standardized-testing', label: 'Standardized Testing' },
+    { value: 'college-visits-and-information-sessions', label: 'College Visits and Information Sessions' },
+    { value: 'post-graduation-goals', label: 'Post-Graduation Goals' },
+    { value: 'support-system', label: 'Support System' },
+    { value: 'decision-making-factors', label: 'Decision-Making Factors' },
+    { value: 'backup-plans', label: 'Backup Plans' },
+  ],
+  'other': [
+    { value: 'reelection', label: 'Reelection' },
+    { value: 'prom-poll', label: 'Prom Poll' },
+    { value: 'assessment', label: 'Assessment' },
+  ],
+};
+
+const gradeOptions = [
+  { value: 'grade_3', label: 'Grade 3' },
+  { value: 'grade_4', label: 'Grade 4' },
+  { value: 'grade_5', label: 'Grade 5' },
+  { value: 'grade_6', label: 'Grade 6' },
+  { value: 'grade_7', label: 'Grade 7' },
+  { value: 'grade_8', label: 'Grade 8' },
+  { value: 'grade_9', label: 'Grade 9' },
+  { value: 'grade_10', label: 'Grade 10' },
+  { value: 'grade_11', label: 'Grade 11' },
+  { value: 'grade_12', label: 'Grade 12' },
+];
+
 function App(props) {
   const [questions, setQuestions] = React.useState([]);
-  const [selectedCategoryOptions, setSelectedCategoryOptions] = React.useState([]);
+  const [selectedCategoryOption, setSelectedCategoryOption] = React.useState(null);
+  const [selectedSubCategoryOption, setSelectedSubCategoryOption] = React.useState([]);
+  const [selectedGradeOption, setSelectedGradeOption] = React.useState([]);
   const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
   const [position, setPosition] = React.useState({ top: 0, left: 0 });
   const popoverRef = React.useRef(null);
@@ -58,9 +122,35 @@ function App(props) {
     }
   };
 
-  const handleCategoryChange = (selected) => {
-    setSelectedCategoryOptions(selected);
+  const handleCategoryChange = (selected, actionMeta) => {
+    switch (actionMeta.name) {
+      case 'category':
+          setSelectedCategoryOption(selected);
+        break;
+        case 'sub-category':
+          setSelectedSubCategoryOption(selected);
+        break;
+        case 'grade':
+          setSelectedGradeOption(selected);
+        break;
+      default:
+        break;
+    }
   }
+
+  const handleSubmitForm = (e) => {
+    e.preventDefault();
+    const category = selectedCategoryOption.value;
+    const sub_category = selectedSubCategoryOption.map((option) => option.value);
+    const grade = selectedGradeOption.map((option) => option.value);
+    if (category && sub_category && grade) {
+      const data = {
+        category,
+        sub_category,
+        grade,
+      };
+    }
+  } 
 
   React.useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
@@ -86,37 +176,50 @@ function App(props) {
                       </div>
                       <div className="">
                         <Select
+                          name="category"
                           options={categoryOptions}
-                          value={selectedCategoryOptions}
+                          value={selectedCategoryOption}
                           onChange={handleCategoryChange}
                           placeholder="Select options..."
                         />
                       </div>
                       <div className="div-17">
-                        <div className="div-18">Category</div>
+                        <div className="div-18">Sub Category</div>
                         <div className="div-19">required</div>
                       </div>
                       <div className="">
                         <Select
+                          name="sub-category"
                           isMulti
-                          options={categoryOptions}
-                          value={selectedCategoryOptions}
+                          options={subCategoryOptions[selectedCategoryOption?.value] || []}
+                          value={selectedSubCategoryOption}
                           onChange={handleCategoryChange}
                           placeholder="Select options..."
                         />
                       </div>
                       <div className="div-17">
-                        <div className="div-18">Category</div>
+                        <div className="div-18">Grades</div>
                         <div className="div-19">required</div>
                       </div>
                       <div className="">
                         <Select
                           isMulti
-                          options={categoryOptions}
-                          value={selectedCategoryOptions}
+                          options={gradeOptions}
+                          name="grade"
+                          value={selectedGradeOption}
                           onChange={handleCategoryChange}
                           placeholder="Select options..."
                         />
+                      </div>
+                      <div className="div-17">
+                        <div className="div-18">
+                          <div
+                            onClick={handleSubmitForm}
+                            className="apply-button"
+                          >
+                            Apply
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
