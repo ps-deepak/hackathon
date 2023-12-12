@@ -160,7 +160,7 @@
   display: flex;
   flex-direction: column;
   line-height: normal;
-  width: 25%;
+  width: 30%;
   margin-left: 0px;
 }
 @media (max-width: 991px) {
@@ -997,7 +997,7 @@
   height: 951px;
   flex-direction: column;
 }
-.column-2 {
+.question-container {
   display: flex;
   flex-direction: column;
   line-height: normal;
@@ -1005,35 +1005,44 @@
   margin-left: 20px;
 }
 @media (max-width: 991px) {
-  .column-2 {
+  .question-container {
     width: 100%;
   }
 }
-.div-69 {
+.question-inner-container {
   display: flex;
   margin-top: 21px;
   flex-direction: column;
   padding: 0 20px;
 }
 @media (max-width: 991px) {
-  .div-69 {
+  .question-inner-container {
     max-width: 100%;
     margin-top: 34px;
   }
 }
-.div-70 {
+.question-heading-title {
   color: var(--text-color-dark, #333);
   white-space: nowrap;
   font: 500 18px/26px Roboto, -apple-system, Roboto, Helvetica,
     sans-serif;
 }
 @media (max-width: 991px) {
-  .div-70 {
+  .question-heading-title {
     max-width: 100%;
     white-space: initial;
   }
 }
-.div-71 {
+.no-question-available img {
+  width: 100%;
+  max-width: fit-content;
+  display: block;
+  margin: 0 auto;
+}
+.no-question-available-text {
+  text-align: center;
+}
+.question-heading-info {
   color: #333;
   margin-top: 20px;
   white-space: nowrap;
@@ -1041,12 +1050,12 @@
     sans-serif;
 }
 @media (max-width: 991px) {
-  .div-71 {
+  .question-heading-info {
     max-width: 100%;
     white-space: initial;
   }
 }
-.div-72 {
+.single-question-container {
   border-radius: 4px;
   border: 1px solid #dfe2e2;
   display: flex;
@@ -1056,11 +1065,11 @@
   padding: 12px 0;
 }
 @media (max-width: 991px) {
-  .div-72 {
+  .single-question-container {
     max-width: 100%;
   }
 }
-.div-73 {
+.single-question-inner-container {
   align-self: stretch;
   display: flex;
   width: 100%;
@@ -1070,17 +1079,17 @@
   gap: 20px;
 }
 @media (max-width: 991px) {
-  .div-73 {
+  .single-question-inner-container {
     max-width: 100%;
     flex-wrap: wrap;
     padding-right: 20px;
   }
 }
-.div-74 {
+.question-box {
   display: flex;
   gap: 11px;
 }
-.div-75 {
+.question-title {
   color: #000;
   align-self: center;
   flex-grow: 1;
@@ -1090,15 +1099,15 @@
     sans-serif;
 }
 @media (max-width: 991px) {
-  .div-75 {
+  .question-title {
     white-space: initial;
   }
 }
-.div-76 {
+.single-question-action {
   display: flex;
   gap: 6px;
 }
-.div-77 {
+.divider {
   align-items: flex-start;
   background-color: var(--global-divider, #dfe2e2);
   align-self: stretch;
@@ -1108,41 +1117,103 @@
   flex-direction: column;
 }
 @media (max-width: 991px) {
-  .div-77 {
+  .divider {
     max-width: 100%;
   }
 }
-.div-78 {
+.question-answer-container {
   display: flex;
-  width: 118px;
+  width: 90%;
   max-width: 100%;
   flex-direction: column;
   margin: 8px 0 0 14px;
 }
 @media (max-width: 991px) {
-  .div-78 {
+  .question-answer-container {
     margin-left: 10px;
   }
 }
-.div-79 {
+.question-answer-inner-container {
   display: flex;
   justify-content: space-between;
   gap: 8px;
   padding: 4px 0;
+  margin: 4px 8px;
 }
-.div-80 {
+.question-answer-inner-container-heading {
+  display: flex;
+  padding: 4px 0;
+  margin: 4px 8px;
+  width: 20px;
+}
+.choice-options {
   color: var(--text-color-dark, #333);
   align-self: center;
   flex-grow: 1;
   white-space: nowrap;
-  margin: auto 0;
+  display: inline-flex;
+  margin: auto 4px;
   font: 400 14px/20px Roboto, -apple-system, Roboto, Helvetica,
     sans-serif;
 }
 @media (max-width: 991px) {
-  .div-80 {
+  .choice-options {
     white-space: initial;
   }
+}
+.textarea {
+  width: 100%;
+}
+.action-img {
+  cursor: pointer;
+}
+.custom-checkbox {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+}
+
+.custom-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: -10px;
+  left: 3px;
+  height: 22px;
+  width: 22px;
+  background-color: #838E91; /* Green background for unchecked state */
+  border-radius: 50%;
+  border: 2px solid #838E91;
+  cursor: pointer;
+}
+
+.custom-checkbox-input:checked ~ .checkmark {
+  background-color: #3E8D21; /* Red background for checked state */
+  border-color: #3E8D21;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0px;
+}
+
+/* Show the checkmark whether it's checked or not */
+.custom-checkbox .checkmark:after {
+  display: block;
+  transform: rotate(45deg);
 }
 .div-81 {
   display: flex;
