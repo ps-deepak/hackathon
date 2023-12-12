@@ -27,6 +27,9 @@ const surveyData = [
   }
 ];
 
+const url = process.env.REACT_APP_API_URL;
+
+// static data
 const categoryOptions = [
   { value: 'social-emotional-learning', label: 'Social-emotional learning' },
   { value: 'careers', label: 'Careers' },
@@ -138,19 +141,44 @@ function App(props) {
     }
   }
 
-  const handleSubmitForm = (e) => {
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
-    const category = selectedCategoryOption.value;
-    const sub_category = selectedSubCategoryOption.map((option) => option.value);
-    const grade = selectedGradeOption.map((option) => option.value);
-    if (category && sub_category && grade) {
+    const category = selectedCategoryOption?.value;
+    const subCategory = selectedSubCategoryOption.map((option) => option.value);
+    const grade = selectedGradeOption.map((option) => extractNumbers(option.value)).filter(x => x);
+    if (category && subCategory && grade) {
       const data = {
         category,
-        sub_category,
+        subCategory,
         grade,
       };
+      try {
+        const response = await fetch(`${url}/api/get-recomended-survey`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+    
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const responseData = await response.json();
+        console.log('Response:', responseData);
+        return responseData;
+      } catch (error) {
+        console.error('Error:', error.message);
+        throw error;
+      }
     }
-  } 
+  }
+
+  const extractNumbers = (input) => {
+    const matches = input.match(/\d+/g);
+    return matches ? parseInt(matches[0], 10) : null;
+  };
 
   React.useEffect(() => {
     document.addEventListener('click', handleOutsideClick);

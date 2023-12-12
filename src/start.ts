@@ -2,16 +2,17 @@ import "reflect-metadata";
 import Container from 'typedi';
 import { OpenAIService } from './langchain';
 import * as bodyParser from 'body-parser';
-import { IsDefined, IsNumber } from 'class-validator';
+import cors from 'cors';
+import { IsDefined, IsString } from 'class-validator';
 import { createExpressServer, JsonController, Post, Body } from "routing-controllers";
 
 class RecomendedSurveyPayload {
   grades: number[];
-  subCategory?: number;
+  subCategory: string[];
 
   @IsDefined()
-  @IsNumber()
-  category: number;
+  @IsString()
+  category: string;
 }
 
 @JsonController("/api")
@@ -25,7 +26,17 @@ class SurveyRecommendationController {
     @Body() payload: RecomendedSurveyPayload
   ): Promise<any> {
     await this.OpenAIService.getRecomendedSurvey(payload);
-    return { success: true, data: payload };
+    return { success: true, data: [
+      {
+        id: 1,
+        text: 'What is your favorite color?',
+        options: ['Red', 'Green', 'Blue', 'Yellow'],
+      },
+      {
+        id: 2,
+        text: 'Who is your favorite person?',
+      }
+    ] };
   }
 }
 
@@ -34,6 +45,7 @@ const app = createExpressServer({
 });
 
 app.use(bodyParser.json());
+app.use(cors());
 
 const PORT = 3000;
 app.listen(PORT, () => {
