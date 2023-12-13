@@ -3,8 +3,9 @@ import Container from 'typedi';
 import { OpenAIService } from './langchain';
 import * as bodyParser from 'body-parser';
 import cors from 'cors';
+import express from "express";
 import { IsDefined, IsString } from 'class-validator';
-import { createExpressServer, JsonController, Post, Body } from "routing-controllers";
+import { createExpressServer, JsonController, Post, Body, useExpressServer } from "routing-controllers";
 
 class RecomendedSurveyPayload {
   grades: number[];
@@ -13,6 +14,7 @@ class RecomendedSurveyPayload {
   @IsDefined()
   @IsString()
   category: string;
+  questionTypes: string[]
 }
 
 @JsonController("/api")
@@ -25,29 +27,25 @@ class SurveyRecommendationController {
   public async submitData(
     @Body() payload: RecomendedSurveyPayload
   ): Promise<any> {
-    await this.OpenAIService.getRecomendedSurvey(payload);
-    return { success: true, data: [
-      {
-        id: 1,
-        text: 'What is your favorite color?',
-        options: ['Red', 'Green', 'Blue', 'Yellow'],
-      },
-      {
-        id: 2,
-        text: 'Who is your favorite person?',
-      }
-    ] };
+   const data = await this.OpenAIService.getRecomendedSurvey(payload);
+    return { success: true, data };
   }
 }
 
-const app = createExpressServer({
-  controllers: [SurveyRecommendationController]
-});
+const app = express();
 
-app.use(bodyParser.json());
+// Apply CORS middleware before routing-controllers
 app.use(cors());
 
-const PORT = 3000;
+// Use routing-controllers
+useExpressServer(app, {
+  controllers: [SurveyRecommendationController],
+  // Other routing-controllers options here
+});
+app.use(bodyParser.json());
+
+
+const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
